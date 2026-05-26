@@ -6,6 +6,7 @@
 #include <QGraphicsView>
 #include <QTimer>
 #include <QGraphicsTextItem>
+#include "nivel2.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -54,6 +55,9 @@ private:
 
     QGraphicsEllipseItem *objetivo;
     float objetivoT;
+    Nivel2 *nivel2;
+    int rondasGanadas;
+    int rondasPerdidas;
 };
 
 

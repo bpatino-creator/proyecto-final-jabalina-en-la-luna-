@@ -135,6 +135,10 @@ MainWindow::MainWindow(QWidget *parent)
     objetivo->setPos(QPointF(500.0, 280.0));
     objetivo->setZValue(100);
 
+    //Rondas.
+    rondasGanadas = 0;
+    rondasPerdidas = 0;
+    nivel2 = new Nivel2(this);
 
     // Timer
     timer = new QTimer(this);
@@ -240,6 +244,19 @@ void MainWindow::actualizar() {
             if(fuerzaAres < 10.0f) fuerzaAres = 10.0f;
             ronda++;
             textoRonda->setPlainText("Ronda: " + QString::number(ronda));
+
+            // Contar rondas ganadas y perdidas
+            if(distanciaJugador > distanciaAres)
+                rondasGanadas++;
+            else
+                rondasPerdidas++;
+
+            // Despues de 5 rondas pasar al Nivel 2
+            if(ronda > 1) {
+                timer->stop();
+                this->hide();
+                nivel2->mostrar();
+            }
         }
 
         if(jabAresY >= 400 || jabAresX >= 790) {
@@ -250,23 +267,30 @@ void MainWindow::actualizar() {
             distanciaAres = (jabAresX - 165) / 10.0f;
 
             if(distanciaJugador > distanciaAres) {
-                // Jugador gana - ARES-1 sube fuerza porque perdio
                 textoResultado->setPlainText("Ronda " + QString::number(ronda) + ": GANASTE! Tu: " +
                                              QString::number(distanciaJugador,'f',1) + "m  ARES-1: " +
                                              QString::number(distanciaAres,'f',1) + "m");
-                fuerzaAres += 10.0f;
-                textoAres->setPlainText("ARES-1 fuerza: " + QString::number((int)(fuerzaAres * 2)) + "%");
-                if(fuerzaAres > 50.0f) fuerzaAres = 50.0f;;
+                fuerzaAres += 5.0f;
+                if(fuerzaAres > 50.0f) fuerzaAres = 50.0f;
+                rondasGanadas++;
             } else {
-                // ARES-1 gana - baja un poco para equilibrar
                 textoResultado->setPlainText("Ronda " + QString::number(ronda) + ": PERDISTE! Tu: " +
                                              QString::number(distanciaJugador,'f',1) + "m  ARES-1: " +
                                              QString::number(distanciaAres,'f',1) + "m");
                 fuerzaAres -= 5.0f;
                 if(fuerzaAres < 10.0f) fuerzaAres = 10.0f;
-                textoAres->setPlainText("ARES-1 fuerza: " + QString::number((int)(fuerzaAres * 2)) + "%");
+                rondasPerdidas++;
             }
+            textoAres->setPlainText("ARES-1 fuerza: " + QString::number((int)(fuerzaAres * 2)) + "%");
+            ronda++;
+            textoRonda->setPlainText("Ronda: " + QString::number(ronda));
 
+            // Pasar al Nivel 2 despues de 5 rondas
+            if(ronda > 1) {
+                timer->stop();
+                this->hide();
+                nivel2->mostrar();
+            }
         }
     }
 
