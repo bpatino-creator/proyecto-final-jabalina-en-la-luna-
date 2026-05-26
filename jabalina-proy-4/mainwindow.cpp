@@ -1,12 +1,14 @@
 #include "mainwindow.h"
 #include <QtMath>
 #include <QKeyEvent>
-
+#include <ctime>
 
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    srand(time(nullptr));
+
     // Tamaño de la ventana
     setFixedSize(800, 500);
     setWindowTitle("Jabalina en la Luna");
@@ -54,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
                     QBrush(QColor(150, 150, 150)));
 
     // Atleta (por ahora un rectangulo blanco)
-    atletaX = 80;
+    atletaX = 40;
     atletaY = 350;
     atleta = escena->addEllipse(atletaX, atletaY, 30, 50,
                                 QPen(Qt::white),
@@ -68,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
     ares->setVisible(false);
 
     // Variables ARES-1
-    fuerzaAres = 30.0f;
+    fuerzaAres = 15.0f;
     turnoAres = false;
     distanciaJugador = 0;
     distanciaAres = 0;
@@ -98,8 +100,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Jabalina ARES-1
     jabAresEnVuelo = false;
-    jabAresX = 165;
-    jabAresY = 360;
+    jabAresX = 40 + 15;
+    jabAresY = 350 + 10;
     jabAres = escena->addLine(jabAresX, jabAresY, jabAresX+20, jabAresY,
                               QPen(QColor(255, 50, 50), 3));
     jabAres->setVisible(false);
@@ -144,7 +146,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         angulo += 5;
     if(event->key() == Qt::Key_Down && angulo > 5)
         angulo -= 5;
-    if(event->key() == Qt::Key_W && fuerza < 70)
+    if(event->key() == Qt::Key_W && fuerza < 50)
         fuerza += 5;
     if(event->key() == Qt::Key_S && fuerza > 10)
         fuerza -= 5;
@@ -152,7 +154,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
     // Espacio lanza la jabalina
     if(event->key() == Qt::Key_Space && !jabEnVuelo) {
         float v0 = (fuerza / 100.0f) * 40.0f;
-        jabVx = v0 * cos(qDegreesToRadians(angulo));
+        float viento = (rand() % 20 - 10) * 0.3f;
+        jabVx = v0 * cos(qDegreesToRadians(angulo)) + viento;
         jabVy = -v0 * sin(qDegreesToRadians(angulo));
         jabX = atletaX + 15;
         jabY = atletaY + 10;
@@ -167,7 +170,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 
     // Actualizar textos
     textoAngulo->setPlainText("Angulo: " + QString::number(angulo) + "°");
-    textoFuerza->setPlainText("Fuerza: " + QString::number(fuerza) + "%");
+    textoFuerza->setPlainText("Fuerza: " + QString::number((int)(fuerza * 2)) + "%");
 
 }
 
@@ -175,8 +178,8 @@ MainWindow::~MainWindow() {}
 
 void MainWindow::actualizar() {
     // Objetivo movil oscilatorio
-    objetivoT += 0.05f;
-    float objY = 280 + 60 * sin(objetivoT);
+    objetivoT += 0.01f;
+    float objY = 200 + 150 * sin(objetivoT);
     objetivo->setPos(QPointF(500.0, (double)objY));
 
     // Logica jabalina jugador
@@ -222,6 +225,23 @@ void MainWindow::actualizar() {
         jabAresY += jabAresVy * dt * 2.6;
         jabAres->setLine(jabAresX, jabAresY, jabAresX+20, jabAresY-5);
 
+        // Colision ARES-1 con objetivo
+        float dxA = jabAresX - (objetivo->x() + 20);
+        float dyA = jabAresY - (objetivo->y() + 20);
+        float distA = sqrt(dxA*dxA + dyA*dyA);
+        if(distA < 35) {
+            jabAresEnVuelo = false;
+            jabAres->setVisible(false);
+            ares->setVisible(false);
+            atleta->setVisible(true);
+            distanciaAres = (jabAresX - 40) / 10.0f;
+            textoResultado->setPlainText("Ronda " + QString::number(ronda) + ": ARES-1 ATINO! PERDISTE");
+            fuerzaAres -= 5.0f;
+            if(fuerzaAres < 10.0f) fuerzaAres = 10.0f;
+            ronda++;
+            textoRonda->setPlainText("Ronda: " + QString::number(ronda));
+        }
+
         if(jabAresY >= 400 || jabAresX >= 790) {
             jabAresEnVuelo = false;
             jabAres->setVisible(false);
@@ -235,16 +255,16 @@ void MainWindow::actualizar() {
                                              QString::number(distanciaJugador,'f',1) + "m  ARES-1: " +
                                              QString::number(distanciaAres,'f',1) + "m");
                 fuerzaAres += 10.0f;
-                textoAres->setPlainText("ARES-1 fuerza: " + QString::number(fuerzaAres) + "%");
-                if(fuerzaAres > 80.0f) fuerzaAres = 80.0f;
+                textoAres->setPlainText("ARES-1 fuerza: " + QString::number((int)(fuerzaAres * 2)) + "%");
+                if(fuerzaAres > 50.0f) fuerzaAres = 50.0f;;
             } else {
                 // ARES-1 gana - baja un poco para equilibrar
                 textoResultado->setPlainText("Ronda " + QString::number(ronda) + ": PERDISTE! Tu: " +
                                              QString::number(distanciaJugador,'f',1) + "m  ARES-1: " +
                                              QString::number(distanciaAres,'f',1) + "m");
                 fuerzaAres -= 5.0f;
-                if(fuerzaAres < 20.0f) fuerzaAres = 20.0f;
-                textoAres->setPlainText("ARES-1 fuerza: " + QString::number(fuerzaAres) + "%");
+                if(fuerzaAres < 10.0f) fuerzaAres = 10.0f;
+                textoAres->setPlainText("ARES-1 fuerza: " + QString::number((int)(fuerzaAres * 2)) + "%");
             }
 
         }
