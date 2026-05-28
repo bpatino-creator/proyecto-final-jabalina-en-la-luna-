@@ -1,7 +1,7 @@
 #include "nivel2.h"
 #include <QMouseEvent>
 
-Nivel2::Nivel2(QWidget *parent) : QObject(parent)
+Nivel2::Nivel2(QWidget *parent) : Nivel(parent)
 {
 
     // Escena y vista
@@ -41,6 +41,7 @@ Nivel2::Nivel2(QWidget *parent) : QObject(parent)
     tiempoRestante = 45;
     vidas = 3;
     velocidadMet = 2.0f;
+    terminado = false;
 
     // Textos
     textoTimer = escena->addText("Tiempo: 45");
@@ -222,4 +223,12 @@ void Nivel2::generarMeteorito()
     metY.push_back(y);
     metVx.push_back(0);
     metVy.push_back(0);
+}
+void Nivel2::inicializar()
+{
+}
+
+bool Nivel2::haTerminado()
+{
+    return terminado;
 }
