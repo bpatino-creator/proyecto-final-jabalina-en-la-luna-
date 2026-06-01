@@ -14,7 +14,6 @@ SOURCES += \
     jabalina.cpp \
     juego.cpp \
     main.cpp \
-    mainwindow.cpp \
     meteorito.cpp \
     nivel.cpp \
     nivel1.cpp \
@@ -26,15 +25,13 @@ HEADERS += \
     atleta.h \
     jabalina.h \
     juego.h \
-    mainwindow.h \
     meteorito.h \
     nivel.h \
     nivel1.h \
     nivel2.h \
     objetojuego.h
 
-FORMS += \
-    mainwindow.ui
+FORMS +=
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

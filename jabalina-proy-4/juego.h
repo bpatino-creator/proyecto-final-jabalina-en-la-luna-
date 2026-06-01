@@ -2,6 +2,7 @@
 #define JUEGO_H
 
 #include <QMainWindow>
+#include <QKeyEvent>
 #include "nivel1.h"
 #include "nivel2.h"
 
@@ -16,6 +17,9 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
+
+private slots:
+    void onNivel1Terminado();
 
 private:
     Nivel *nivelActual;

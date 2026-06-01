@@ -1,6 +1,7 @@
 #ifndef NIVEL_H
 #define NIVEL_H
 
+#include <QObject>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QTimer>

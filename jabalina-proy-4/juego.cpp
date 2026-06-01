@@ -6,6 +6,8 @@ Juego::Juego(QWidget *parent) : QMainWindow(parent)
     nivel1 = new Nivel1(this);
     nivel2 = new Nivel2(this);
     nivelActual = nivel1;
+
+    connect(nivel1, &Nivel1::nivelTerminado, this, &Juego::onNivel1Terminado);
 }
 
 Juego::~Juego() {}
@@ -24,7 +26,13 @@ void Juego::cambiarNivel(int n)
     }
 }
 
+void Juego::onNivel1Terminado()
+{
+    cambiarNivel(2);
+}
+
 void Juego::keyPressEvent(QKeyEvent *event)
 {
-    nivel1->keyPress(event);
+    if(nivelActual == nivel1)
+        nivel1->keyPress(event);
 }

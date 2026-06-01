@@ -2,6 +2,7 @@
 #define NIVEL2_H
 
 #include "nivel.h"
+#include "meteorito.h"
 #include <QGraphicsEllipseItem>
 #include <QGraphicsTextItem>
 #include <QMouseEvent>
@@ -32,11 +33,10 @@ private:
     QGraphicsEllipseItem *jugador;
     float jugadorX, jugadorY;
 
+    vector<Meteorito*> meteoritosObj;
     vector<QGraphicsEllipseItem*> meteoritos;
     vector<float> metX;
     vector<float> metY;
-    vector<float> metVx;
-    vector<float> metVy;
 
     QGraphicsLineItem *jabalina;
     float jabX, jabY;

@@ -17,8 +17,8 @@ Atleta::~Atleta() {}
 
 void Atleta::actualizar(float /*dt*/) {}
 
-void Atleta::setPos(float x, float y) {
-    this->x = x;
-    this->y = y;
-    sprite->setPos(x, y);
+void Atleta::setPosicion(float nx, float ny) {
+    this->x = nx;
+    this->y = ny;
+    sprite->setPos(nx, ny);
 }

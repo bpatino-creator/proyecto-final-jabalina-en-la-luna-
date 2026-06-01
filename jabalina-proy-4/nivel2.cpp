@@ -3,8 +3,6 @@
 
 Nivel2::Nivel2(QWidget *parent) : Nivel(parent)
 {
-
-    // Escena y vista
     escena = new QGraphicsScene();
     escena->setSceneRect(0, 0, 800, 500);
 
@@ -15,7 +13,6 @@ Nivel2::Nivel2(QWidget *parent) : Nivel(parent)
     vista->setFocusPolicy(Qt::NoFocus);
     vista->viewport()->installEventFilter(this);
 
-    // Fondo negro
     escena->setBackgroundBrush(QBrush(QColor(5, 5, 20)));
 
     // Estrellas
@@ -25,17 +22,24 @@ Nivel2::Nivel2(QWidget *parent) : Nivel(parent)
         escena->addEllipse(x, y, 2, 2, QPen(Qt::white), QBrush(Qt::white));
     }
 
+    // Crateres (vista cenital)
+    escena->addEllipse(100, 100, 80, 80, QPen(QColor(100,100,100), 2), QBrush(QColor(30,30,30)));
+    escena->addEllipse(600, 300, 60, 60, QPen(QColor(100,100,100), 2), QBrush(QColor(30,30,30)));
+    escena->addEllipse(300, 350, 50, 50, QPen(QColor(100,100,100), 2), QBrush(QColor(30,30,30)));
+    escena->addEllipse(650, 80, 70, 70, QPen(QColor(100,100,100), 2), QBrush(QColor(30,30,30)));
+
     // Jugador en el centro
     jugadorX = 385;
     jugadorY = 225;
     jugador = escena->addEllipse(jugadorX, jugadorY, 30, 30,
-                                 QPen(Qt::white),
-                                 QBrush(QColor(200, 220, 255)));
+                                 QPen(Qt::white), QBrush(QColor(200, 220, 255)));
+    jugador->setZValue(10);
 
     // Jabalina
     jabEnVuelo = false;
     jabalina = escena->addLine(0, 0, 0, 0, QPen(QColor(255, 200, 0), 3));
     jabalina->setVisible(false);
+    jabalina->setZValue(10);
 
     // Variables
     tiempoRestante = 45;
@@ -47,31 +51,39 @@ Nivel2::Nivel2(QWidget *parent) : Nivel(parent)
     textoTimer = escena->addText("Tiempo: 45");
     textoTimer->setDefaultTextColor(Qt::white);
     textoTimer->setPos(350, 10);
+    textoTimer->setZValue(20);
 
     textoVidas = escena->addText("Vidas: 3");
     textoVidas->setDefaultTextColor(Qt::red);
     textoVidas->setPos(10, 10);
+    textoVidas->setZValue(20);
 
     textoResultado = escena->addText("");
     textoResultado->setDefaultTextColor(Qt::yellow);
-    textoResultado->setPos(300, 460);
+    textoResultado->setPos(250, 230);
+    textoResultado->setZValue(20);
+
+    // Instruccion
+    QGraphicsTextItem *instruccion = escena->addText("Clic para lanzar jabalina");
+    instruccion->setDefaultTextColor(QColor(150, 150, 150));
+    instruccion->setPos(280, 460);
 
     // Timers
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Nivel2::actualizar);
-    timer->start(16);
 
     timerJuego = new QTimer(this);
     connect(timerJuego, &QTimer::timeout, this, &Nivel2::reducirTiempo);
-    timerJuego->start(1000);
 
     vista->hide();
 }
 
+Nivel2::~Nivel2() {}
 
+void Nivel2::inicializar() {}
 
-Nivel2::~Nivel2()
-{
+bool Nivel2::haTerminado() {
+    return terminado;
 }
 
 bool Nivel2::eventFilter(QObject *obj, QEvent *event)
@@ -82,30 +94,23 @@ bool Nivel2::eventFilter(QObject *obj, QEvent *event)
             float dx = mouseEvent->pos().x() - (jugadorX + 15);
             float dy = mouseEvent->pos().y() - (jugadorY + 15);
             float dist = sqrt(dx*dx + dy*dy);
-            jabVx = (dx/dist) * 8.0f;
-            jabVy = (dy/dist) * 8.0f;
-            jabX = jugadorX + 15;
-            jabY = jugadorY + 15;
-            jabEnVuelo = true;
-            jabalina->setVisible(true);
+            if(dist > 0) {
+                jabVx = (dx/dist) * 8.0f;
+                jabVy = (dy/dist) * 8.0f;
+                jabX = jugadorX + 15;
+                jabY = jugadorY + 15;
+                jabEnVuelo = true;
+                jabalina->setVisible(true);
+            }
         }
     }
     return QObject::eventFilter(obj, event);
 }
 
-
 void Nivel2::mostrar()
 {
-    vista->show();
-    vista->setWindowTitle("Jabalina en la Luna - Nivel 2");
-    vista->setWindowFlags(Qt::Window);
-    vista->resize(800, 500);
-    vista->show();
-    timer->start(16);
-    timerJuego->start(1000);
-    vista->viewport()->installEventFilter(this); // ← agregar aqui también
-    vista->show();
-    vista->setWindowTitle("Jabalina en la Luna - Nivel 2");
+    vista->viewport()->installEventFilter(this);
+    vista->setWindowTitle("Jabalina en la Luna - Nivel 2: Defensa Estelar");
     vista->setWindowFlags(Qt::Window);
     vista->resize(800, 500);
     vista->show();
@@ -115,11 +120,16 @@ void Nivel2::mostrar()
 
 void Nivel2::ocultar()
 {
+    timer->stop();
+    timerJuego->stop();
+    vista->hide();
 }
 
 void Nivel2::actualizar()
 {
-    // Jabalina ← PRIMERO
+    if(terminado) return;
+
+    // Jabalina
     if(jabEnVuelo) {
         jabX += jabVx;
         jabY += jabVy;
@@ -130,52 +140,49 @@ void Nivel2::actualizar()
             jabalina->setVisible(false);
         }
 
-        for(int i = 0; i < (int)meteoritos.size(); i++) {
-            float dx = jabX - metX[i];
-            float dy = jabY - metY[i];
+        // Colision jabalina con meteoritos
+        for(int i = 0; i < (int)meteoritosObj.size(); i++) {
+            float dx = jabX - meteoritosObj[i]->getX();
+            float dy = jabY - meteoritosObj[i]->getY();
             float dist = sqrt(dx*dx + dy*dy);
             if(dist < 25) {
-                escena->removeItem(meteoritos[i]);
-                meteoritos.erase(meteoritos.begin() + i);
+                meteoritosObj[i]->eliminar(escena);
+                delete meteoritosObj[i];
+                meteoritosObj.erase(meteoritosObj.begin() + i);
                 metX.erase(metX.begin() + i);
                 metY.erase(metY.begin() + i);
-                metVx.erase(metVx.begin() + i);
-                metVy.erase(metVy.begin() + i);
                 jabEnVuelo = false;
                 jabalina->setVisible(false);
                 break;
             }
         }
     }
-    // Mover meteoritos hacia el jugador
-    for(int i = 0; i < (int)meteoritos.size(); i++) {
-        float dx = jugadorX - metX[i];
-        float dy = jugadorY - metY[i];
-        float dist = sqrt(dx*dx + dy*dy);
 
-        if(dist > 0) {
-            metX[i] += (dx/dist) * velocidadMet;
-            metY[i] += (dy/dist) * velocidadMet;
-            meteoritos[i]->setPos(metX[i], metY[i]);
-        }
+    // Mover meteoritos hacia jugador
+    for(int i = 0; i < (int)meteoritosObj.size(); i++) {
+        meteoritosObj[i]->moverHacia(jugadorX + 15, jugadorY + 15, velocidadMet);
+        metX[i] = meteoritosObj[i]->getX();
+        metY[i] = meteoritosObj[i]->getY();
 
         // Colision meteorito con jugador
+        float dx = metX[i] - (jugadorX + 15);
+        float dy = metY[i] - (jugadorY + 15);
+        float dist = sqrt(dx*dx + dy*dy);
         if(dist < 30) {
             vidas--;
             textoVidas->setPlainText("Vidas: " + QString::number(vidas));
-            // Eliminar meteorito
-            escena->removeItem(meteoritos[i]);
-            meteoritos.erase(meteoritos.begin() + i);
+            meteoritosObj[i]->eliminar(escena);
+            delete meteoritosObj[i];
+            meteoritosObj.erase(meteoritosObj.begin() + i);
             metX.erase(metX.begin() + i);
             metY.erase(metY.begin() + i);
-            metVx.erase(metVx.begin() + i);
-            metVy.erase(metVy.begin() + i);
             i--;
 
             if(vidas <= 0) {
                 timer->stop();
                 timerJuego->stop();
-                textoResultado->setPlainText("PERDISTE! Sin vidas");
+                textoResultado->setPlainText("GAME OVER! Sin vidas");
+                terminado = true;
             }
         }
     }
@@ -186,7 +193,6 @@ void Nivel2::reducirTiempo()
     tiempoRestante--;
     textoTimer->setPlainText("Tiempo: " + QString::number(tiempoRestante));
 
-    // Generar meteorito cada 3 segundos
     if(tiempoRestante % 3 == 0) {
         generarMeteorito();
         velocidadMet += 0.2f;
@@ -196,15 +202,14 @@ void Nivel2::reducirTiempo()
         timer->stop();
         timerJuego->stop();
         textoResultado->setPlainText("SOBREVIVISTE! Ganaste el juego!");
+        terminado = true;
     }
 }
-
 
 void Nivel2::generarMeteorito()
 {
     if(tiempoRestante <= 0) return;
 
-    // Generar desde un borde aleatorio
     float x, y;
     int borde = rand() % 4;
     if(borde == 0) { x = rand() % 800; y = 0; }
@@ -212,23 +217,8 @@ void Nivel2::generarMeteorito()
     else if(borde == 2) { x = 0; y = rand() % 500; }
     else { x = 800; y = rand() % 500; }
 
-    QGraphicsEllipseItem* met = escena->addEllipse(0, 0, 25, 25,
-                                                   QPen(Qt::NoPen),
-                                                   QBrush(QColor(150, 80, 20)));
-    met->setPos(x, y);
-    met->setZValue(5);
-
-    meteoritos.push_back(met);
+    Meteorito *met = new Meteorito(x, y, escena);
+    meteoritosObj.push_back(met);
     metX.push_back(x);
     metY.push_back(y);
-    metVx.push_back(0);
-    metVy.push_back(0);
-}
-void Nivel2::inicializar()
-{
-}
-
-bool Nivel2::haTerminado()
-{
-    return terminado;
 }

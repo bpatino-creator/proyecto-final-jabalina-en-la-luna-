@@ -4,6 +4,7 @@
 #include "objetojuego.h"
 #include <QGraphicsLineItem>
 #include <QtMath>
+#include <QPen>
 
 class Jabalina : public ObjetoJuego {
 public:

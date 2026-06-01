@@ -3,7 +3,6 @@
 
 #include "atleta.h"
 #include <vector>
-
 using namespace std;
 
 class Ares1 : public Atleta {
@@ -16,7 +15,7 @@ public:
     float actuar();
     void aprender(float resultado);
 
-    float getFuerzaAres() { return fuerza; }
+    float getFuerza() { return fuerza; }
 
 private:
     vector<float> historial;

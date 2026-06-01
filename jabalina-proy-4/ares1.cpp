@@ -6,8 +6,6 @@ Ares1::Ares1(float x, float y, QGraphicsScene *escena)
     nivelDificultad = 0.3f;
     modoAgresivo = false;
     fuerza = 15.0f;
-
-    // Cambiar color a rojo
     sprite->setBrush(QBrush(QColor(255, 100, 100)));
     sprite->setPen(QPen(Qt::red));
 }
