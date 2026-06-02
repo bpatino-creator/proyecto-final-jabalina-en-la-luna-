@@ -1,4 +1,5 @@
 #include "nivel1.h"
+#include <QDebug>
 
 Nivel1::Nivel1(QWidget *parent) : Nivel(parent)
 {
@@ -48,14 +49,21 @@ Nivel1::Nivel1(QWidget *parent) : Nivel(parent)
 
     // Atleta usando clase Atleta
     atletaObj = new Atleta(atletaX, atletaY, escena);
-    atletaSprite = escena->addEllipse(atletaX, atletaY, 30, 50,
-                                      QPen(Qt::white), QBrush(QColor(200, 220, 255)));
+
+    QPixmap pixAtleta(":/imagenes/atleta.png.png");
+    pixAtleta = pixAtleta.scaled(60, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    atletaPixmap = escena->addPixmap(pixAtleta);
+    atletaPixmap->setPos(atletaX, atletaY);
+    atletaPixmap->setZValue(5);
 
     // ARES-1 usando clase Ares1
     ares1obj = new Ares1(150, 350, escena);
-    aresSprite = escena->addEllipse(150, 350, 30, 50,
-                                    QPen(Qt::red), QBrush(QColor(255, 100, 100)));
-    aresSprite->setVisible(false);
+    QPixmap pixAres(":/imagenes/ares1.png.png");
+    pixAres = pixAres.scaled(60, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    aresSprite2 = escena->addPixmap(pixAres);
+    aresSprite2->setPos(150, 350);
+    aresSprite2->setZValue(5);
+    aresSprite2->setVisible(false);
 
     // Jabalina jugador
     jabX = atletaX + 15;
@@ -156,8 +164,6 @@ void Nivel1::keyPress(QKeyEvent *event) {
         jabY = atletaY + 10;
         jabEnVuelo = true;
         jabalina->setVisible(true);
-
-        // Agente percibe la situacion
         ares1obj->percibir(distanciaJugador);
     }
 
@@ -192,7 +198,7 @@ void Nivel1::actualizar() {
             jabalina->setVisible(false);
             textoResultado->setPlainText("ATINASTE AL OBJETIVO! +100 puntos");
             distanciaJugador = (jabX - atletaX) / 10.0f;
-            atletaSprite->setVisible(false);
+            atletaPixmap->setVisible(false);
             turnoAres = true;
         }
 
@@ -202,7 +208,7 @@ void Nivel1::actualizar() {
             distanciaJugador = (jabX - atletaX) / 10.0f;
             textoDistancia->setPlainText("Distancia: " +
                 QString::number(distanciaJugador, 'f', 1) + " m");
-            atletaSprite->setVisible(false);
+            atletaPixmap->setVisible(false);
             turnoAres = true;
         }
     }
@@ -223,8 +229,8 @@ void Nivel1::actualizar() {
         if(distA < 35) {
             jabAresEnVuelo = false;
             jabAres->setVisible(false);
-            aresSprite->setVisible(false);
-            atletaSprite->setVisible(true);
+            aresSprite2->setVisible(false);
+            atletaPixmap->setVisible(true);
             distanciaAres = (jabAresX - atletaX) / 10.0f;
             textoResultado->setPlainText("Ronda " + QString::number(ronda) + ": ARES-1 ATINO! PERDISTE");
             ares1obj->aprender(-1);
@@ -238,8 +244,8 @@ void Nivel1::actualizar() {
         if(jabAresY >= 400 || jabAresX >= 790) {
             jabAresEnVuelo = false;
             jabAres->setVisible(false);
-            aresSprite->setVisible(false);
-            atletaSprite->setVisible(true);
+            aresSprite2->setVisible(false);
+            atletaPixmap->setVisible(true);
             distanciaAres = (jabAresX - atletaX) / 10.0f;
 
             if(distanciaJugador > distanciaAres) {
@@ -264,8 +270,8 @@ void Nivel1::actualizar() {
 
     // ARES-1 lanza en su turno
     if(turnoAres && !jabAresEnVuelo) {
-        aresSprite->setPos(atletaX, atletaY);
-        aresSprite->setVisible(true);
+        aresSprite2->setPos(atletaX, atletaY);
+        aresSprite2->setVisible(true);
         float fuerzaAres = ares1obj->actuar();
         float v0 = (fuerzaAres / 100.0f) * 40.0f;
         jabAresVx = v0 * cos(qDegreesToRadians(45.0f));

@@ -8,9 +8,13 @@ Atleta::Atleta(float x, float y, QGraphicsScene *escena)
     vidas = 3;
     fuerte = true;
 
-    sprite = escena->addEllipse(x, y, 30, 50,
+    /*sprite = escena->addEllipse(x, y, 30, 50,
                                 QPen(Qt::white),
-                                QBrush(QColor(200, 220, 255)));
+                                QBrush(QColor(200, 220, 255)));*/
+    sprite = escena->addEllipse(x, y, 30, 50,
+                                QPen(Qt::NoPen),
+                                QBrush(Qt::transparent));
+    sprite->setVisible(false);
 }
 
 Atleta::~Atleta() {}

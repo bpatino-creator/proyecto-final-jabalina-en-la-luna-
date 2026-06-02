@@ -6,8 +6,11 @@ Ares1::Ares1(float x, float y, QGraphicsScene *escena)
     nivelDificultad = 0.3f;
     modoAgresivo = false;
     fuerza = 15.0f;
-    sprite->setBrush(QBrush(QColor(255, 100, 100)));
-    sprite->setPen(QPen(Qt::red));
+    //sprite->setBrush(QBrush(QColor(255, 100, 100)));
+    //sprite->setPen(QPen(Qt::red));
+    sprite->setBrush(QBrush(Qt::transparent));
+    sprite->setPen(QPen(Qt::NoPen));
+    sprite->setVisible(false);
 }
 
 Ares1::~Ares1() {}

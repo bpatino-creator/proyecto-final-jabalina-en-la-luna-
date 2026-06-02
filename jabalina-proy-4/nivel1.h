@@ -6,6 +6,8 @@
 #include <QGraphicsEllipseItem>
 #include <QGraphicsLineItem>
 #include <QGraphicsTextItem>
+#include <QGraphicsPixmapItem>
+#include <QPixmap>
 #include <QKeyEvent>
 #include <QtMath>
 #include <ctime>
@@ -33,13 +35,13 @@ private slots:
 private:
     // Jugador
     Atleta *atletaObj;
-    QGraphicsEllipseItem *atletaSprite;
+    QGraphicsPixmapItem *atletaPixmap;
     float atletaX, atletaY;
     float angulo, fuerza;
 
     // Agente
     Ares1 *ares1obj;
-    QGraphicsEllipseItem *aresSprite;
+    QGraphicsPixmapItem *aresSprite2;
 
     // Jabalina jugador
     QGraphicsLineItem *jabalina;
