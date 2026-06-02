@@ -71,6 +71,8 @@ private:
     QGraphicsTextItem *textoRonda;
     QGraphicsTextItem *textoResultado;
     QGraphicsTextItem *textoAres;
+    QGraphicsPixmapItem *jabPixmap;
+    QGraphicsPixmapItem *jabAresPixmap;
 
     bool terminado;
 };

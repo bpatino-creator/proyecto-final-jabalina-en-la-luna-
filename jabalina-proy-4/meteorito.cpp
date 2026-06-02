@@ -5,11 +5,19 @@ Meteorito::Meteorito(float x, float y, QGraphicsScene *escena)
 {
     tamano = 1;
     danio = 1;
-    sprite = escena->addEllipse(0, 0, 25, 25,
+    /*sprite = escena->addEllipse(0, 0, 25, 25,
                                 QPen(Qt::NoPen),
                                 QBrush(QColor(150, 80, 20)));
     sprite->setPos(x, y);
+    sprite->setZValue(5);*/
+    QPixmap pixMet(":/imagenes/meteorito.png.png");
+    pixMet = pixMet.scaled(40, 40, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    sprite = escena->addEllipse(0, 0, 40, 40, QPen(Qt::NoPen), QBrush(Qt::transparent));
+    sprite->setPos(x, y);
     sprite->setZValue(5);
+    QGraphicsPixmapItem *metPixmap = escena->addPixmap(pixMet);
+    metPixmap->setParentItem(sprite);
+    metPixmap->setZValue(6);
 }
 
 Meteorito::~Meteorito() {}

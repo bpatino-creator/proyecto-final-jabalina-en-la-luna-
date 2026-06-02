@@ -68,15 +68,27 @@ Nivel1::Nivel1(QWidget *parent) : Nivel(parent)
     // Jabalina jugador
     jabX = atletaX + 15;
     jabY = atletaY + 10;
-    jabalina = escena->addLine(jabX, jabY, jabX+20, jabY, QPen(QColor(255, 200, 0), 3));
-    jabalina->setVisible(false);
+    //jabalina = escena->addLine(jabX, jabY, jabX+20, jabY, QPen(QColor(255, 200, 0), 3));
+    //jabalina->setVisible(false);
+    QPixmap pixJab(":/imagenes/jabalina.png.png");
+    pixJab = pixJab.scaled(80, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    jabPixmap = escena->addPixmap(pixJab);
+    jabPixmap->setPos(jabX, jabY);
+    jabPixmap->setZValue(6);
+    jabPixmap->setVisible(false);
 
     // Jabalina ARES-1
     jabAresX = atletaX + 15;
     jabAresY = atletaY + 10;
-    jabAres = escena->addLine(jabAresX, jabAresY, jabAresX+20, jabAresY,
-                              QPen(QColor(255, 50, 50), 3));
-    jabAres->setVisible(false);
+    //jabAres = escena->addLine(jabAresX, jabAresY, jabAresX+20, jabAresY,
+    //                           QPen(QColor(255, 50, 50), 3));
+    //jabAres->setVisible(false);
+    QPixmap pixJabAres(":/imagenes/jabalina.png.png");
+    pixJabAres = pixJabAres.scaled(80, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    jabAresPixmap = escena->addPixmap(pixJabAres);
+    jabAresPixmap->setPos(jabAresX, jabAresY);
+    jabAresPixmap->setZValue(6);
+    jabAresPixmap->setVisible(false);
 
     // Linea angulo
     lineaAngulo = escena->addLine(atletaX+15, atletaY+10,
@@ -163,7 +175,7 @@ void Nivel1::keyPress(QKeyEvent *event) {
         jabX = atletaX + 15;
         jabY = atletaY + 10;
         jabEnVuelo = true;
-        jabalina->setVisible(true);
+        jabPixmap->setVisible(true);
         ares1obj->percibir(distanciaJugador);
     }
 
@@ -187,7 +199,8 @@ void Nivel1::actualizar() {
         jabVy += g * dt;
         jabX += jabVx * dt * 2.6f;
         jabY += jabVy * dt * 2.6f;
-        jabalina->setLine(jabX, jabY, jabX+20, jabY-5);
+        //jabPixmap->setLine(jabX, jabY, jabX+20, jabY-5);
+        jabPixmap->setPos(jabX, jabY);
 
         // Colision con objetivo
         float dx = jabX - (objetivo->x() + 20);
@@ -195,7 +208,7 @@ void Nivel1::actualizar() {
         float dist = sqrt(dx*dx + dy*dy);
         if(dist < 35) {
             jabEnVuelo = false;
-            jabalina->setVisible(false);
+            jabPixmap->setVisible(false);
             textoResultado->setPlainText("ATINASTE AL OBJETIVO! +100 puntos");
             distanciaJugador = (jabX - atletaX) / 10.0f;
             atletaPixmap->setVisible(false);
@@ -204,7 +217,7 @@ void Nivel1::actualizar() {
 
         if(jabY >= 400 || jabX >= 790) {
             jabEnVuelo = false;
-            jabalina->setVisible(false);
+            jabPixmap->setVisible(false);
             distanciaJugador = (jabX - atletaX) / 10.0f;
             textoDistancia->setPlainText("Distancia: " +
                 QString::number(distanciaJugador, 'f', 1) + " m");
@@ -220,7 +233,8 @@ void Nivel1::actualizar() {
         jabAresVy += g * dt;
         jabAresX += jabAresVx * dt * 2.6f;
         jabAresY += jabAresVy * dt * 2.6f;
-        jabAres->setLine(jabAresX, jabAresY, jabAresX+20, jabAresY-5);
+        //jabAres->setLine(jabAresX, jabAresY, jabAresX+20, jabAresY-5);
+        jabAresPixmap->setPos(jabAresX, jabAresY);
 
         // Colision ARES-1 con objetivo
         float dxA = jabAresX - (objetivo->x() + 20);
@@ -228,7 +242,7 @@ void Nivel1::actualizar() {
         float distA = sqrt(dxA*dxA + dyA*dyA);
         if(distA < 35) {
             jabAresEnVuelo = false;
-            jabAres->setVisible(false);
+            jabAresPixmap->setVisible(false);
             aresSprite2->setVisible(false);
             atletaPixmap->setVisible(true);
             distanciaAres = (jabAresX - atletaX) / 10.0f;
@@ -238,12 +252,12 @@ void Nivel1::actualizar() {
             ronda++;
             textoRonda->setPlainText("Ronda: " + QString::number(ronda));
             rondasPerdidas++;
-            if(ronda > 5) pasarNivel2();
+            if(ronda > 1) pasarNivel2();
         }
 
         if(jabAresY >= 400 || jabAresX >= 790) {
             jabAresEnVuelo = false;
-            jabAres->setVisible(false);
+            jabAresPixmap->setVisible(false);
             aresSprite2->setVisible(false);
             atletaPixmap->setVisible(true);
             distanciaAres = (jabAresX - atletaX) / 10.0f;
@@ -264,7 +278,7 @@ void Nivel1::actualizar() {
             textoAres->setPlainText("ARES-1 fuerza: " + QString::number((int)(ares1obj->getFuerza() * 2)) + "%");
             ronda++;
             textoRonda->setPlainText("Ronda: " + QString::number(ronda));
-            if(ronda > 5) pasarNivel2();
+            if(ronda > 1) pasarNivel2();
         }
     }
 
@@ -279,7 +293,7 @@ void Nivel1::actualizar() {
         jabAresX = atletaX + 15;
         jabAresY = atletaY + 10;
         jabAresEnVuelo = true;
-        jabAres->setVisible(true);
+        jabAresPixmap->setVisible(true);
         turnoAres = false;
     }
 }

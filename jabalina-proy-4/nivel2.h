@@ -7,6 +7,9 @@
 #include <QGraphicsTextItem>
 #include <QMouseEvent>
 #include <vector>
+#include <QGraphicsPixmapItem>
+#include <QPixmap>
+
 
 using namespace std;
 
@@ -47,6 +50,8 @@ private:
     QGraphicsTextItem *textoTimer;
     QGraphicsTextItem *textoVidas;
     QGraphicsTextItem *textoResultado;
+    QGraphicsPixmapItem *jugadorPixmap;
+    QGraphicsPixmapItem *jabPixmapN2;
 
     float velocidadMet;
     bool terminado;

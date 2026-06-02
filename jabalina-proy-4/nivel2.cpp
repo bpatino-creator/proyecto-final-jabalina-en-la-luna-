@@ -31,15 +31,30 @@ Nivel2::Nivel2(QWidget *parent) : Nivel(parent)
     // Jugador en el centro
     jugadorX = 385;
     jugadorY = 225;
-    jugador = escena->addEllipse(jugadorX, jugadorY, 30, 30,
+    /*jugador = escena->addEllipse(jugadorX, jugadorY, 30, 30,
                                  QPen(Qt::white), QBrush(QColor(200, 220, 255)));
-    jugador->setZValue(10);
+    jugador->setZValue(10);*/
+    QPixmap pixJugador(":/imagenes/jugador_cenital.png.png");
+    pixJugador = pixJugador.scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    jugadorPixmap = escena->addPixmap(pixJugador);
+    jugadorPixmap->setPos(jugadorX, jugadorY);
+    jugadorPixmap->setZValue(10);
+    jugador = escena->addEllipse(jugadorX, jugadorY, 30, 30,
+                                 QPen(Qt::NoPen), QBrush(Qt::transparent));
 
     // Jabalina
-    jabEnVuelo = false;
+    /*jabEnVuelo = false;
     jabalina = escena->addLine(0, 0, 0, 0, QPen(QColor(255, 200, 0), 3));
-    jabalina->setVisible(false);
-    jabalina->setZValue(10);
+    jabalina->setVisible(false);*/
+
+
+    QPixmap pixJabN2(":/imagenes/jabalina_cenital.png.png");
+    pixJabN2 = pixJabN2.scaled(20, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    jabPixmapN2 = escena->addPixmap(pixJabN2);
+    jabPixmapN2->setPos(0, 0);
+    jabPixmapN2->setZValue(10);
+    jabPixmapN2->setVisible(false);
+    //jabalina->setZValue(10);
 
     // Variables
     tiempoRestante = 45;
@@ -100,7 +115,7 @@ bool Nivel2::eventFilter(QObject *obj, QEvent *event)
                 jabX = jugadorX + 15;
                 jabY = jugadorY + 15;
                 jabEnVuelo = true;
-                jabalina->setVisible(true);
+                jabPixmapN2->setVisible(true);
             }
         }
     }
@@ -133,11 +148,11 @@ void Nivel2::actualizar()
     if(jabEnVuelo) {
         jabX += jabVx;
         jabY += jabVy;
-        jabalina->setLine(jabX, jabY, jabX+15, jabY+15);
+        jabPixmapN2->setPos(jabX, jabY);
 
         if(jabX < 0 || jabX > 800 || jabY < 0 || jabY > 500) {
             jabEnVuelo = false;
-            jabalina->setVisible(false);
+            jabPixmapN2->setVisible(false);
         }
 
         // Colision jabalina con meteoritos
@@ -152,7 +167,7 @@ void Nivel2::actualizar()
                 metX.erase(metX.begin() + i);
                 metY.erase(metY.begin() + i);
                 jabEnVuelo = false;
-                jabalina->setVisible(false);
+                jabPixmapN2->setVisible(false);
                 break;
             }
         }
