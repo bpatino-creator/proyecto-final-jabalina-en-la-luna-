@@ -35,10 +35,10 @@ float Ares1::actuar() {
 
 void Ares1::aprender(float resultado) {
     if(resultado > 0) {
-        fuerza += modoAgresivo ? 15.0f : 5.0f;
-        if(fuerza > 50.0f) fuerza = 50.0f;
+        fuerza += modoAgresivo ? 30.0f : 15.0f;
+        if(fuerza > 100.0f) fuerza = 100.0f;
     } else {
-        fuerza -= 5.0f;
+        fuerza -= 1.0f;
         if(fuerza < 10.0f) fuerza = 10.0f;
         modoAgresivo = false;
     }

@@ -18,6 +18,10 @@ public:
     float getY() { return y; }
     void eliminar(QGraphicsScene *escena);
     QGraphicsEllipseItem* getSprite() { return sprite; }
+    void setOscilacion(float ox) {
+        x += ox;
+        sprite->setPos(x, y);
+    }
 
 private:
     QGraphicsEllipseItem *sprite;

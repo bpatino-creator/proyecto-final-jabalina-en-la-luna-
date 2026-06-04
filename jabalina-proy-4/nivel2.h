@@ -48,6 +48,7 @@ private:
     float jabX, jabY;
     float jabVx, jabVy;
     bool jabEnVuelo;
+    float tiempoJuego;
 
     int vidas;
     QGraphicsTextItem *textoTimer;

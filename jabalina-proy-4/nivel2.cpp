@@ -6,6 +6,7 @@ Nivel2::Nivel2(QWidget *parent) : Nivel(parent)
 {
     escena = new QGraphicsScene();
     escena->setSceneRect(0, 0, 800, 500);
+    tiempoJuego = 0;
 
     vista = new QGraphicsView(escena, (QWidget*)parent);
     vista->setFixedSize(800, 500);
@@ -153,6 +154,7 @@ void Nivel2::ocultar()
 
 void Nivel2::actualizar()
 {
+    tiempoJuego += 0.016f;
     if(terminado) return;
 
     // Jabalina
@@ -218,10 +220,15 @@ void Nivel2::actualizar()
         for(int i = 0; i < (int)meteoritosObj.size(); i++) {
             if(meteoritosObj[i] == nullptr)
                 throw std::runtime_error("Meteorito nulo");
+
+            // Movimiento oscilatorio compuesto
             meteoritosObj[i]->moverHacia(jugadorX + 15, jugadorY + 15, velocidadMet);
+            float oscilacion = sin(tiempoJuego * 0.15f + i * 1.5f) * 15.0f;
+            meteoritosObj[i]->setOscilacion(oscilacion);
             metX[i] = meteoritosObj[i]->getX();
             metY[i] = meteoritosObj[i]->getY();
 
+            // Colision con jugador
             float dx = metX[i] - (jugadorX + 15);
             float dy = metY[i] - (jugadorY + 15);
             float dist = sqrt(dx*dx + dy*dy);

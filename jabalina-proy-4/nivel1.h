@@ -80,6 +80,14 @@ private:
     QGraphicsTextItem *textoAres;
     QGraphicsPixmapItem *jabPixmap;
     QGraphicsPixmapItem *jabAresPixmap;
+    QGraphicsPixmapItem *objetivoPixmap;
+    QGraphicsPixmapItem *nubePixmap;
+
+    // Nube de polvo cosmico
+    QGraphicsEllipseItem *nubePolvo;
+    float nubeX, nubeY;
+    bool nubeActiva;
+    int nubeTimer;
 
     bool terminado;
 };
