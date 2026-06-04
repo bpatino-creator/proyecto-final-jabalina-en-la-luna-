@@ -13,6 +13,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "dificultad.h"
+#include <QSoundEffect>
 
 class Nivel1 : public Nivel {
     Q_OBJECT
@@ -65,6 +66,10 @@ private:
     float distanciaJugador, distanciaAres;
     int ronda;
     int rondasGanadas, rondasPerdidas;
+
+    //sonidos
+    QSoundEffect *sonidoFondo;
+    QSoundEffect *sonidoLanzamiento;
 
     // Textos
     QGraphicsTextItem *textoAngulo;

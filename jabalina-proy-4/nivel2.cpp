@@ -1,5 +1,6 @@
 #include "nivel2.h"
 #include <QMouseEvent>
+#include <QDebug>
 
 Nivel2::Nivel2(QWidget *parent) : Nivel(parent)
 {
@@ -14,6 +15,16 @@ Nivel2::Nivel2(QWidget *parent) : Nivel(parent)
     vista->viewport()->installEventFilter(this);
 
     escena->setBackgroundBrush(QBrush(QColor(5, 5, 20)));
+
+    //sonidos
+    sonidoExplosion = new QSoundEffect(this);
+    sonidoExplosion->setSource(QUrl("qrc:/sonidos/explosion.wav.wav"));
+    sonidoExplosion->setVolume(0.8f);
+
+    sonidoExplosion = new QSoundEffect(this);
+    sonidoExplosion->setSource(QUrl("qrc:/sonidos/explosion.wav.wav"));
+    sonidoExplosion->setVolume(0.8f);
+    qDebug() << "Sonido explosion:" << sonidoExplosion->source();
 
     // Estrellas
     for(int i = 0; i < 80; i++) {
@@ -163,9 +174,11 @@ void Nivel2::actualizar()
             if(dist < 25) {
                 meteoritosObj[i]->eliminar(escena);
                 delete meteoritosObj[i];
+                sonidoExplosion->play();
                 meteoritosObj.erase(meteoritosObj.begin() + i);
                 metX.erase(metX.begin() + i);
                 metY.erase(metY.begin() + i);
+                sonidoExplosion->play();
                 jabEnVuelo = false;
                 jabPixmapN2->setVisible(false);
                 break;

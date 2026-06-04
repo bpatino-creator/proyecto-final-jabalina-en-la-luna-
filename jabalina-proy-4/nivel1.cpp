@@ -1,6 +1,8 @@
 #include "nivel1.h"
 #include <QDebug>
 #include <stdexcept>
+#include <QSoundEffect>
+#include <QUrl>
 
 Nivel1::Nivel1(QWidget *parent) : Nivel(parent)
 {
@@ -12,6 +14,17 @@ Nivel1::Nivel1(QWidget *parent) : Nivel(parent)
     vista->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     vista->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     vista->setFocusPolicy(Qt::NoFocus);
+
+    // Sonido de fondo
+    sonidoFondo = new QSoundEffect(this);
+    sonidoFondo->setSource(QUrl("qrc:/sonidos/fondo.wav.wav"));
+    sonidoFondo->setLoopCount(QSoundEffect::Infinite);
+    sonidoFondo->setVolume(0.3f);
+
+    // Sonido lanzamiento
+    sonidoLanzamiento = new QSoundEffect(this);
+    sonidoLanzamiento->setSource(QUrl("qrc:/sonidos/lanzamiento.wav.wav"));
+    sonidoLanzamiento->setVolume(0.8f);
 
     // Fondo
     escena->setBackgroundBrush(QBrush(QColor(5, 5, 20)));
@@ -161,6 +174,7 @@ void Nivel1::mostrar() {
     vista->setWindowTitle("Jabalina en la Luna - Nivel 1");
     vista->show();
     timer->start(16);
+    sonidoFondo->play();
 }
 
 void Nivel1::ocultar() {
@@ -191,6 +205,7 @@ void Nivel1::keyPress(QKeyEvent *event) {
         jabX = atletaX + 15;
         jabY = atletaY + 10;
         jabEnVuelo = true;
+        sonidoLanzamiento->play();
         jabPixmap->setVisible(true);
         ares1obj->percibir(distanciaJugador);
     }

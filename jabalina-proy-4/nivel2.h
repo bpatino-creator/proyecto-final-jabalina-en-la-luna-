@@ -10,6 +10,7 @@
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
 #include "dificultad.h"
+#include <QSoundEffect>
 
 
 using namespace std;
@@ -54,6 +55,9 @@ private:
     QGraphicsTextItem *textoResultado;
     QGraphicsPixmapItem *jugadorPixmap;
     QGraphicsPixmapItem *jabPixmapN2;
+
+    //sonido
+    QSoundEffect *sonidoExplosion;
 
     float velocidadMet;
     bool terminado;
