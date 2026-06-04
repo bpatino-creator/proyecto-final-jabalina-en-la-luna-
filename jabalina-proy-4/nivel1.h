@@ -12,6 +12,7 @@
 #include <QtMath>
 #include <ctime>
 #include <cstdlib>
+#include "dificultad.h"
 
 class Nivel1 : public Nivel {
     Q_OBJECT
@@ -25,6 +26,7 @@ public:
     bool haTerminado() override;
     void keyPress(QKeyEvent *event);
     void pasarNivel2();
+    void setDificultad(Dificultad d);
 
 signals:
     void nivelTerminado();

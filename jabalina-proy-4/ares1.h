@@ -16,6 +16,7 @@ public:
     void aprender(float resultado);
 
     float getFuerza() { return fuerza; }
+    void setFuerzaInicial(float f) { fuerza = f; }
 
 private:
     vector<float> historial;

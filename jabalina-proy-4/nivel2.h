@@ -9,6 +9,7 @@
 #include <vector>
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
+#include "dificultad.h"
 
 
 using namespace std;
@@ -24,6 +25,7 @@ public:
     void ocultar() override;
     bool haTerminado() override;
     bool eventFilter(QObject *obj, QEvent *event) override;
+    void setDificultad(Dificultad d);
 
 private slots:
     void actualizar();

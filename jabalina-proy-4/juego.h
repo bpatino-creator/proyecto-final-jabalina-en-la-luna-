@@ -5,6 +5,8 @@
 #include <QKeyEvent>
 #include "nivel1.h"
 #include "nivel2.h"
+#include "dificultad.h"
+
 
 class Juego : public QMainWindow {
     Q_OBJECT
@@ -26,6 +28,8 @@ private:
     Nivel1 *nivel1;
     Nivel2 *nivel2;
     int puntaje;
+    Dificultad dificultad;
+    void mostrarMenuDificultad();
 };
 
 #endif

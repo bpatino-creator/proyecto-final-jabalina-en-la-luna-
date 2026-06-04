@@ -174,7 +174,7 @@ void Nivel2::actualizar()
     }
 
     // Mover meteoritos hacia jugador
-    for(int i = 0; i < (int)meteoritosObj.size(); i++) {
+    /*for(int i = 0; i < (int)meteoritosObj.size(); i++) {
         meteoritosObj[i]->moverHacia(jugadorX + 15, jugadorY + 15, velocidadMet);
         metX[i] = meteoritosObj[i]->getX();
         metY[i] = meteoritosObj[i]->getY();
@@ -200,6 +200,37 @@ void Nivel2::actualizar()
                 terminado = true;
             }
         }
+    }*/
+    try {
+        for(int i = 0; i < (int)meteoritosObj.size(); i++) {
+            if(meteoritosObj[i] == nullptr)
+                throw std::runtime_error("Meteorito nulo");
+            meteoritosObj[i]->moverHacia(jugadorX + 15, jugadorY + 15, velocidadMet);
+            metX[i] = meteoritosObj[i]->getX();
+            metY[i] = meteoritosObj[i]->getY();
+
+            float dx = metX[i] - (jugadorX + 15);
+            float dy = metY[i] - (jugadorY + 15);
+            float dist = sqrt(dx*dx + dy*dy);
+            if(dist < 30) {
+                vidas--;
+                textoVidas->setPlainText("Vidas: " + QString::number(vidas));
+                meteoritosObj[i]->eliminar(escena);
+                delete meteoritosObj[i];
+                meteoritosObj.erase(meteoritosObj.begin() + i);
+                metX.erase(metX.begin() + i);
+                metY.erase(metY.begin() + i);
+                i--;
+                if(vidas <= 0) {
+                    timer->stop();
+                    timerJuego->stop();
+                    textoResultado->setPlainText("GAME OVER! Sin vidas");
+                    terminado = true;
+                }
+            }
+        }
+    } catch(std::runtime_error &e) {
+        qDebug() << e.what();
     }
 }
 
@@ -236,4 +267,14 @@ void Nivel2::generarMeteorito()
     meteoritosObj.push_back(met);
     metX.push_back(x);
     metY.push_back(y);
+}
+
+void Nivel2::setDificultad(Dificultad d) {
+    if(d == FACIL) {
+        velocidadMet = 1.5f;
+    } else if(d == NORMAL) {
+        velocidadMet = 2.0f;
+    } else {
+        velocidadMet = 3.0f;
+    }
 }

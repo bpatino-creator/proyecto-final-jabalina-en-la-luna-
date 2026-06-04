@@ -23,6 +23,7 @@ SOURCES += \
 HEADERS += \
     ares1.h \
     atleta.h \
+    dificultad.h \
     jabalina.h \
     juego.h \
     meteorito.h \

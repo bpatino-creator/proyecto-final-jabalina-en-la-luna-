@@ -1,5 +1,6 @@
 #include "nivel1.h"
 #include <QDebug>
+#include <stdexcept>
 
 Nivel1::Nivel1(QWidget *parent) : Nivel(parent)
 {
@@ -50,20 +51,35 @@ Nivel1::Nivel1(QWidget *parent) : Nivel(parent)
     // Atleta usando clase Atleta
     atletaObj = new Atleta(atletaX, atletaY, escena);
 
-    QPixmap pixAtleta(":/imagenes/atleta.png.png");
-    pixAtleta = pixAtleta.scaled(60, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    atletaPixmap = escena->addPixmap(pixAtleta);
-    atletaPixmap->setPos(atletaX, atletaY);
-    atletaPixmap->setZValue(5);
+    try {
+        QPixmap pixAtleta(":/imagenes/atleta.png.png");
+        if(pixAtleta.isNull())
+            throw std::runtime_error("Error: no se pudo cargar atleta.png");
+        pixAtleta = pixAtleta.scaled(60, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        atletaPixmap = escena->addPixmap(pixAtleta);
+        atletaPixmap->setPos(atletaX, atletaY);
+        atletaPixmap->setZValue(5);
+    } catch(std::runtime_error &e) {
+        qDebug() << e.what();
+        atletaPixmap = escena->addPixmap(QPixmap());
+    }
 
     // ARES-1 usando clase Ares1
     ares1obj = new Ares1(150, 350, escena);
-    QPixmap pixAres(":/imagenes/ares1.png.png");
-    pixAres = pixAres.scaled(60, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    aresSprite2 = escena->addPixmap(pixAres);
-    aresSprite2->setPos(150, 350);
-    aresSprite2->setZValue(5);
-    aresSprite2->setVisible(false);
+    try {
+        QPixmap pixAres(":/imagenes/ares1.png.png");
+        if(pixAres.isNull())
+            throw std::runtime_error("Error: no se pudo cargar ares1.png");
+        pixAres = pixAres.scaled(60, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        aresSprite2 = escena->addPixmap(pixAres);
+        aresSprite2->setPos(150, 350);
+        aresSprite2->setZValue(5);
+        aresSprite2->setVisible(false);
+    } catch(std::runtime_error &e) {
+        qDebug() << e.what();
+        aresSprite2 = escena->addPixmap(QPixmap());
+        aresSprite2->setVisible(false);
+    }
 
     // Jabalina jugador
     jabX = atletaX + 15;
@@ -295,5 +311,19 @@ void Nivel1::actualizar() {
         jabAresEnVuelo = true;
         jabAresPixmap->setVisible(true);
         turnoAres = false;
+    }
+}
+
+void Nivel1::setDificultad(Dificultad d) {
+    if(d == FACIL) {
+        // Polvo cosmico pequeño
+        // ARES-1 empieza débil y aprende lento
+        ares1obj->setFuerzaInicial(10.0f);
+    } else if(d == NORMAL) {
+        // Valores por defecto
+        ares1obj->setFuerzaInicial(15.0f);
+    } else { // DIFICIL
+        // ARES-1 empieza fuerte
+        ares1obj->setFuerzaInicial(30.0f);
     }
 }
