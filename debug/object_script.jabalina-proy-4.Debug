@@ -1,0 +1,15 @@
+debug/ares1.o
+debug/atleta.o
+debug/jabalina.o
+debug/juego.o
+debug/main.o
+debug/meteorito.o
+debug/nivel.o
+debug/nivel1.o
+debug/nivel2.o
+debug/objetojuego.o
+debug/qrc_recursos.o
+debug/moc_juego.o
+debug/moc_nivel.o
+debug/moc_nivel1.o
+debug/moc_nivel2.o

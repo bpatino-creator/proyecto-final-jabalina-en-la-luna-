@@ -25,7 +25,7 @@ Nivel2::Nivel2(QWidget *parent) : Nivel(parent)
     sonidoExplosion = new QSoundEffect(this);
     sonidoExplosion->setSource(QUrl("qrc:/sonidos/explosion.wav.wav"));
     sonidoExplosion->setVolume(0.8f);
-    qDebug() << "Sonido explosion:" << sonidoExplosion->source();
+    //qDebug() << "Sonido explosion:" << sonidoExplosion->source();
 
     // Estrellas
     for(int i = 0; i < 80; i++) {
@@ -71,7 +71,7 @@ Nivel2::Nivel2(QWidget *parent) : Nivel(parent)
     // Variables
     tiempoRestante = 45;
     vidas = 3;
-    velocidadMet = 2.0f;
+    velocidadMet = 1.0f;
     terminado = false;
 
     // Textos
@@ -115,6 +115,12 @@ bool Nivel2::haTerminado() {
 
 bool Nivel2::eventFilter(QObject *obj, QEvent *event)
 {
+    if(event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        keyPress(keyEvent);
+        return true;
+    }
+
     if(event->type() == QEvent::MouseButtonPress) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
         if(!jabEnVuelo) {
@@ -143,6 +149,9 @@ void Nivel2::mostrar()
     vista->show();
     timer->start(16);
     timerJuego->start(1000);
+    vista->setFocus();
+    vista->grabKeyboard();
+    vista->installEventFilter(this);
 }
 
 void Nivel2::ocultar()
@@ -259,7 +268,7 @@ void Nivel2::reducirTiempo()
     tiempoRestante--;
     textoTimer->setPlainText("Tiempo: " + QString::number(tiempoRestante));
 
-    if(tiempoRestante % 3 == 0) {
+    if(tiempoRestante % 5 == 0) {
         generarMeteorito();
         velocidadMet += 0.2f;
     }
@@ -288,8 +297,27 @@ void Nivel2::generarMeteorito()
     metX.push_back(x);
     metY.push_back(y);
 }
+void Nivel2::keyPress(QKeyEvent *event) {
+    float velocidad = 5.0f;
+    if(event->key() == Qt::Key_Up && jugadorY > 0) jugadorY -= velocidad;
+    if(event->key() == Qt::Key_Down && jugadorY < 470) jugadorY += velocidad;
+    if(event->key() == Qt::Key_Left && jugadorX > 0) jugadorX -= velocidad;
+    if(event->key() == Qt::Key_Right && jugadorX < 770) jugadorX += velocidad;
+    jugador->setPos(jugadorX, jugadorY);
+    jugadorPixmap->setPos(jugadorX, jugadorY);
+}
 
 void Nivel2::setDificultad(Dificultad d) {
+    if(d == FACIL) {
+        velocidadMet = 0.8f;
+    } else if(d == NORMAL) {
+        velocidadMet = 1.2f;
+    } else {
+        velocidadMet = 1.5f;
+    }
+}
+
+/*void Nivel2::setDificultad(Dificultad d) {
     if(d == FACIL) {
         velocidadMet = 1.5f;
     } else if(d == NORMAL) {
@@ -297,4 +325,4 @@ void Nivel2::setDificultad(Dificultad d) {
     } else {
         velocidadMet = 3.0f;
     }
-}
+}*/

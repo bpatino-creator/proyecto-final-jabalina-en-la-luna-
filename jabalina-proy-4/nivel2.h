@@ -13,6 +13,7 @@
 #include <QSoundEffect>
 
 
+
 using namespace std;
 
 class Nivel2 : public Nivel {
@@ -27,6 +28,7 @@ public:
     bool haTerminado() override;
     bool eventFilter(QObject *obj, QEvent *event) override;
     void setDificultad(Dificultad d);
+    void keyPress(QKeyEvent *event);
 
 private slots:
     void actualizar();

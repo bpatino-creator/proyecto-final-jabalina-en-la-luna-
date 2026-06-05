@@ -212,7 +212,7 @@ void Nivel1::pasarNivel2() {
     resultado += "Rondas ganadas: " + QString::number(rondasGanadas) + "\n";
     resultado += "Rondas perdidas: " + QString::number(rondasPerdidas) + "\n\n";
 
-    if(rondasGanadas >= 1 || rondasGanadas == rondasPerdidas)  {
+    if(rondasGanadas >= 2 || rondasGanadas == rondasPerdidas)  {
         resultado += "GANASTE el entrenamiento!\nPasas al Nivel 2: Defensa Estelar";
         QMessageBox::information(nullptr, "Fin del Nivel 1", resultado);
         terminado = true;
@@ -388,7 +388,7 @@ void Nivel1::actualizar() {
             textoAres->setPlainText("ARES-1 fuerza: " + QString::number((int)(ares1obj->getFuerza())) + "%");
             ronda++;
             textoRonda->setPlainText("Ronda: " + QString::number(ronda) + " de 3");
-            if(ronda > 1) pasarNivel2();
+            if(ronda > 2) pasarNivel2();
         }
 
         if(jabAresY >= 500 || jabAresX >= 1490 || jabAresX < 0) {
@@ -415,7 +415,7 @@ void Nivel1::actualizar() {
             textoAres->setPlainText("ARES-1 fuerza: " + QString::number((int)(ares1obj->getFuerza())) + "%");
             ronda++;
             textoRonda->setPlainText("Ronda: " + QString::number(ronda) + " de 3");
-            if(ronda > 1) pasarNivel2();
+            if(ronda > 2) pasarNivel2();
         }
     }
 

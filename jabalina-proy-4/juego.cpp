@@ -35,11 +35,17 @@ void Juego::onNivel1Terminado()
     cambiarNivel(2);
 }
 
-void Juego::keyPressEvent(QKeyEvent *event)
+void Juego::keyPressEvent(QKeyEvent *event) {
+    if(nivelActual == nivel1)
+        nivel1->keyPress(event);
+    else if(nivelActual == nivel2)
+        nivel2->keyPress(event);
+}
+/*void Juego::keyPressEvent(QKeyEvent *event)
 {
     if(nivelActual == nivel1)
         nivel1->keyPress(event);
-}
+}*/
 
 void Juego::mostrarMenuDificultad()
 {
